@@ -21,6 +21,8 @@ wf = wave.open(sys.argv[1], 'rb')
 
 p = pyaudio.PyAudio()
 
+print "RATE: " + str(wf.getframerate())
+
 stream = p.open(format=p.get_format_from_width(wf.getsampwidth()),
                 channels=wf.getnchannels(),
                 rate=wf.getframerate(),
