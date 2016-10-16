@@ -26,7 +26,8 @@ print "RATE: " + str(wf.getframerate())
 stream = p.open(format=p.get_format_from_width(wf.getsampwidth()),
                 channels=wf.getnchannels(),
                 rate=wf.getframerate(),
-                output=True)
+                output=True,
+                input_device_index=2)
 
 data = wf.readframes(CHUNK)
 
