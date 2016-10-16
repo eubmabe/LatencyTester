@@ -31,6 +31,8 @@ for x in xrange(RESTFRAMES):
  WAVEDATA = WAVEDATA+chr(128)
 
 p = PyAudio()
+
+print 'NU SPELAR VI LJUDET!!!!!'
 stream = p.open(format = p.get_format_from_width(1), 
                 channels = 1, 
                 rate = BITRATE, 
