@@ -15,7 +15,7 @@ GPIO.setup(channel, GPIO.OUT, initial=state)
 
 while True:
     GPIO.output(channel, state)
-    if state = GPIO.LOW:
+    if state == GPIO.LOW:
         print 'LOW'
         state = GPIO.HIGH
     else:
