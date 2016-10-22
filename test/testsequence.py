@@ -14,7 +14,8 @@ import wave
 
 
 # Init test bed
-wf = wave.open('OKgoogleLeft.wav', 'rb')
+#wf = wave.open('OKgoogleLeft.wav', 'rb')
+wf = wave.open('CallB_Left.wav', 'rb')
 # instantiate PyAudio (1)
 p = pyaudio.PyAudio()
 # define callback (2)
@@ -59,7 +60,7 @@ stream.stop_stream()
 stream.close()
 wf.close()
 # close PyAudio (7)
-
+"""
 time.sleep(2)
 
 
@@ -80,7 +81,7 @@ stream.stop_stream()
 stream.close()
 wf.close()
 # close PyAudio (7)
-
+"""
 
 p.terminate()
 
