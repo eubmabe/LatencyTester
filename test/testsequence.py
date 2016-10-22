@@ -60,10 +60,19 @@ stream.stop_stream()
 stream.close()
 wf.close()
 # close PyAudio (7)
+
+time.sleep(20)
+
+# Press button 2 sec (left channel)
+print 'Press mic button'
+GPIO.output(channel, GPIO.HIGH)
+# Wait 2 seconds and release
+time.sleep(0.3)
+print 'Release mic button'
+GPIO.setup(channel, GPIO.OUT, initial=GPIO.LOW)
+
+
 """
-time.sleep(2)
-
-
 wf = wave.open('CallB_Left.wav', 'rb')
 stream = p.open(format=p.get_format_from_width(wf.getsampwidth()),
                 channels=wf.getnchannels(),
