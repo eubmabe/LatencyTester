@@ -67,7 +67,7 @@ time.sleep(20)
 print 'Press mic button'
 GPIO.output(channel, GPIO.HIGH)
 # Wait 2 seconds and release
-time.sleep(1)
+time.sleep(0.1)
 print 'Release mic button'
 GPIO.setup(channel, GPIO.OUT, initial=GPIO.LOW)
 
