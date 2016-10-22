@@ -21,12 +21,6 @@ p = pyaudio.PyAudio()
 def pyAudioCallback(in_data, frame_count, time_info, status):
     data = wf.readframes(frame_count)
     return (data, pyaudio.paContinue)
-# open stream using callback (3)
-stream = p.open(format=p.get_format_from_width(wf.getsampwidth()),
-                channels=wf.getnchannels(),
-                rate=wf.getframerate(),
-                output=True,
-                stream_callback=pyAudioCallback)
 
     
 print 'Init GPIO'
@@ -47,6 +41,12 @@ GPIO.setup(channel, GPIO.OUT, initial=GPIO.LOW)
 # Wait a couple of seconds and play "go google" to activate google voice recognition
 time.sleep(2)
 print 'Start play OK google on left channel'
+# open stream using callback (3)
+stream = p.open(format=p.get_format_from_width(wf.getsampwidth()),
+                channels=wf.getnchannels(),
+                rate=wf.getframerate(),
+                output=True,
+                stream_callback=pyAudioCallback)
 stream.start_stream()
 
 while stream.is_active():
