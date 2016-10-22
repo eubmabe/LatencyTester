@@ -40,7 +40,7 @@ print 'Release mic button'
 GPIO.setup(channel, GPIO.OUT, initial=GPIO.LOW)
 
 # Wait a couple of seconds and play "go google" to activate google voice recognition
-time.sleep(2)
+time.sleep(3)
 print 'Start play OK google on left channel'
 # open stream using callback (3)
 stream = p.open(format=p.get_format_from_width(wf.getsampwidth()),
@@ -67,7 +67,7 @@ time.sleep(20)
 print 'Press mic button'
 GPIO.output(channel, GPIO.HIGH)
 # Wait 2 seconds and release
-time.sleep(0.3)
+time.sleep(1)
 print 'Release mic button'
 GPIO.setup(channel, GPIO.OUT, initial=GPIO.LOW)
 
