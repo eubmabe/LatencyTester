@@ -9,8 +9,13 @@ import RPi.GPIO as GPIO
 import time
 import pyaudio
 import wave
+import sys
 
+click_delay = 0.5
+if len(sys.argv) >=2:
+    click_delay = float(sys.argv[1])
 
+print("Click delay = " + str (click_delay))
 
 
 # Init test bed
@@ -67,10 +72,11 @@ time.sleep(20)
 print 'Press mic button'
 GPIO.output(channel, GPIO.HIGH)
 # Wait 2 seconds and release
-time.sleep(0.1)
+time.sleep(click_delay)
 print 'Release mic button'
 GPIO.setup(channel, GPIO.OUT, initial=GPIO.LOW)
 
+time.sleep(5) # Give time to sence LOW
 
 """
 wf = wave.open('CallB_Left.wav', 'rb')
