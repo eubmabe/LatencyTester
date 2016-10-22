@@ -59,6 +59,29 @@ stream.stop_stream()
 stream.close()
 wf.close()
 # close PyAudio (7)
+
+time.sleep(2)
+
+
+wf = wave.open('CallB_Left.wav', 'rb')
+stream = p.open(format=p.get_format_from_width(wf.getsampwidth()),
+                channels=wf.getnchannels(),
+                rate=wf.getframerate(),
+                output=True,
+                stream_callback=pyAudioCallback)
+stream.start_stream()
+
+while stream.is_active():
+    time.sleep(0.1)
+
+# Clean up everything....
+# stop stream (6)
+stream.stop_stream()
+stream.close()
+wf.close()
+# close PyAudio (7)
+
+
 p.terminate()
 
 GPIO.cleanup()
