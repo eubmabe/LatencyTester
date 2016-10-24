@@ -99,7 +99,7 @@ def printState ():
         print 'STATE = ' + str(recordTestState)
         printTestState = recordTestState
 
-def pyTestSequenceCallback (in_data, frame_count, time_info, status, printState):
+def pyTestSequenceCallback (in_data, frame_count, time_info, status):
     global recordedData
     global noiseLevel
     global RECORD_STATE
@@ -153,7 +153,7 @@ RECORD_STATE = {'START':-10,'MEASURE_NOISE_LEVEL':0,'SEND_PULSE':1,'DETECT_OUT_P
 recordTestState = RECORD_STATE['START']
 printTestState = recordTestState
 
-handleSound ('testPulseLeft.wav', pyTestSequenceCallback, True)
+handleSound ('testPulseLeft.wav', pyTestSequenceCallback, True, printState)
 
 recordedDataVec = np.reshape(recordedData,newshape = [noRecData,2])
 
