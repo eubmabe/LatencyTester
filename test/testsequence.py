@@ -16,6 +16,7 @@ def dummyPrint ():
     return
     
 def handleSound (fileName, callBackFunction, inFlag = False, printFunction = dummyPrint):
+    global wf
     wf = wave.open(fileName, 'rb')
     stream = p.open(format=p.get_format_from_width(wf.getsampwidth()),
                     channels=wf.getnchannels(),
