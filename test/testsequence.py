@@ -106,6 +106,7 @@ def pyTestSequenceCallback (in_data, frame_count, time_info, status):
     global recordTestState
     global noRecData
 
+    data = ''
     returnCode = pyaudio.paContinue
     if len(in_data) > 0:
         dataChunk = np.abs(np.fromstring(in_data, dtype='int{0}'.format(16)))
