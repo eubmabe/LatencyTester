@@ -127,7 +127,7 @@ def pyTestSequenceCallback (in_data, frame_count, time_info, status):
             if data == '' and frame_count:
                 recordTestState = RECORD_STATE['DETECT_OUT_PULSE']
         elif recordTestState == RECORD_STATE['DETECT_OUT_PULSE']:
-            printData = str(dataChunk.mean())
+            printData = str(dataChunk.mean()) + ' ' + str (noiseLevel * 10)
             if dataChunk.mean() > noiseLevel * 10:
                 wf.rewind()
                 recordTestState = RECORD_STATE['WAIT_FOR_PULSE_TIME']
