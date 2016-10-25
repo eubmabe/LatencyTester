@@ -96,7 +96,7 @@ def printState ():
     global printTestState
     
     if printTestState != recordTestState:
-        print 'STATE = ' + str(recordTestState)
+        print 'STATE = ' + str(recordTestState) + ' DATA = '+ printData
         printTestState = recordTestState
 
 def pyTestSequenceCallback (in_data, frame_count, time_info, status):
@@ -105,7 +105,7 @@ def pyTestSequenceCallback (in_data, frame_count, time_info, status):
     global RECORD_STATE
     global recordTestState
     global noRecData
-
+    global printData
     data = ''
     returnCode = pyaudio.paContinue
     if len(in_data) > 0:
@@ -120,17 +120,20 @@ def pyTestSequenceCallback (in_data, frame_count, time_info, status):
                 noiseLevel = (noiseLevel+dataChunk.mean())/2
             else:
                 noiseLevel = dataChunk.mean()
+            printData = str(noiseLevel)
         elif recordTestState == RECORD_STATE['SEND_PULSE']:
             data = wf.readframes(frame_count)
-            if data == '':
+            printData = str(len(data))
+            if data == '' and frame_count:
                 recordTestState = RECORD_STATE['DETECT_OUT_PULSE']
         elif recordTestState == RECORD_STATE['DETECT_OUT_PULSE']:
+            printData = str(dataChunk.mean())
             if dataChunk.mean() > noiseLevel * 10:
                 wf.rewind()
                 recordTestState = RECORD_STATE['WAIT_FOR_PULSE_TIME']
         elif recordTestState == RECORD_STATE['WAIT_FOR_PULSE_TIME']:
             measureTimePulse = wf.readframes(frame_count)
-            if measureTimePulse == '':
+            if measureTimePulse == '' and frame_count:
                 recordTestState = RECORD_STATE['DETECT_RETURN_PULSE']
         elif recordTestState == RECORD_STATE['DETECT_RETURN_PULSE']:
             if dataChunk.mean() > noiseLevel * 10:
@@ -138,7 +141,7 @@ def pyTestSequenceCallback (in_data, frame_count, time_info, status):
                 recordTestState = RECORD_STATE['WAIT_FOR_RET_PULSE_TIME']
         elif recordTestState == RECORD_STATE['WAIT_FOR_RET_PULSE_TIME']:
             measureTimePulse = wf.readframes(frame_count/4) # Add some extra delay
-            if measureTimePulse == '':
+            if measureTimePulse == '' and frame_count:
                 returnCode = pyaudio.paComplete
             
             
@@ -153,8 +156,13 @@ noiseLevel = 0
 RECORD_STATE = {'START':-10,'MEASURE_NOISE_LEVEL':0,'SEND_PULSE':1,'DETECT_OUT_PULSE':2,'WAIT_FOR_PULSE_TIME':3,'DETECT_RETURN_PULSE':4,'WAIT_FOR_RET_PULSE_TIME':3}
 recordTestState = RECORD_STATE['START']
 printTestState = recordTestState
+printData = ''
 
 handleSound ('testPulseLeft.wav', pyTestSequenceCallback, True, printState)
+
+print 'COMPLETED!!!!'
+
+printState ()
 
 recordedDataVec = np.reshape(recordedData,newshape = [noRecData,2])
 
