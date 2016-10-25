@@ -174,7 +174,7 @@ printState (40)
 
 recordedDataVec = np.reshape(recordedData,newshape = [noRecData,2])
 
-
+np.save ('outNP.npy',recordedDataVec)
 
 
 #handleSound ('testPulseRight.wav', pyTestSequenceCallback, True)
