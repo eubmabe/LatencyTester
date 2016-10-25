@@ -100,7 +100,7 @@ def printState (printCnt):
         print 'STATE = ' + str(recordTestState) + ' DATA = '+ printData
         printTestState = recordTestState
         printCnt = 0
-   return printCnt
+    return printCnt
    
 def pyTestSequenceCallback (in_data, frame_count, time_info, status):
     global recordedData
