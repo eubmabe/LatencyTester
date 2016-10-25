@@ -123,7 +123,7 @@ def pyTestSequenceCallback (in_data, frame_count, time_info, status):
                 noiseLevel = (noiseLevel+dataChunk.mean())/2
             else:
                 noiseLevel = dataChunk.mean()
-            printData = str(noiseLevel)
+            printData = str(time_info)
         elif recordTestState == RECORD_STATE['SEND_PULSE']:
             data = wf.readframes(frame_count)
             printData = str(len(data))
