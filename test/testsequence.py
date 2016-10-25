@@ -156,7 +156,7 @@ def pyTestSequenceCallback (in_data, frame_count, time_info, status):
 recordedData = []
 noRecData = 0
 noiseLevel = 0
-RECORD_STATE = {'START':-10,'MEASURE_NOISE_LEVEL':0,'SEND_PULSE':1,'DETECT_OUT_PULSE':2,'WAIT_FOR_PULSE_TIME':3,'DETECT_RETURN_PULSE':4,'WAIT_FOR_RET_PULSE_TIME':3}
+RECORD_STATE = {'START':-10,'MEASURE_NOISE_LEVEL':0,'SEND_PULSE':1,'DETECT_OUT_PULSE':2,'WAIT_FOR_PULSE_TIME':3,'DETECT_RETURN_PULSE':4,'WAIT_FOR_RET_PULSE_TIME':5}
 recordTestState = RECORD_STATE['START']
 printTestState = recordTestState
 printData = ''
