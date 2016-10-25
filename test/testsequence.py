@@ -12,11 +12,12 @@ import wave
 import sys
 import numpy as np
 
-def dummyPrint ():
-    return
+def dummyPrint (printCnt):
+    return printCnt
     
 def handleSound (fileName, callBackFunction, inFlag = False, printFunction = dummyPrint):
     global wf
+    printCnt = 0
     wf = wave.open(fileName, 'rb')
     stream = p.open(format=p.get_format_from_width(wf.getsampwidth()),
                     channels=wf.getnchannels(),
@@ -28,7 +29,7 @@ def handleSound (fileName, callBackFunction, inFlag = False, printFunction = dum
     
     while stream.is_active():
         time.sleep(0.1)
-        printFunction ()
+        printCnt = printFunction (printCnt)
      
     # Clean up everything....
     # stop stream (6)
@@ -91,14 +92,16 @@ time.sleep(2) # Give time to sence silence
 
 # Start test
 
-def printState ():
+def printState (printCnt):
     global recordTestState
     global printTestState
-    
-    if printTestState != recordTestState:
+    printCnt +=1
+    if printTestState != recordTestState or printCnt > 20:
         print 'STATE = ' + str(recordTestState) + ' DATA = '+ printData
         printTestState = recordTestState
-
+        printCnt = 0
+   return printCnt
+   
 def pyTestSequenceCallback (in_data, frame_count, time_info, status):
     global recordedData
     global noiseLevel
