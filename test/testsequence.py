@@ -145,8 +145,8 @@ def pyTestSequenceCallback (in_data, frame_count, time_info, status):
                 returnCode = pyaudio.paComplete
             
             
-    if data == '': # Play silence
-        data = '\x00'*frame_count*4 # wf.getsampwidth()*wf.getnchannels()
+    if len (data) < frame_count*4: # Play silence
+        data += '\x00'*(frame_count*4-len (data)) # wf.getsampwidth()*wf.getnchannels()
     
     return (data, returnCode)
     
