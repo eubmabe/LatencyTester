@@ -167,4 +167,6 @@ class testCtrl:
         if (detectVec>self.PULSE_DETECT_SAMP).sum() == 2:
             print "Pulse on both channels detected!!!"
             return endTime
+        else:
+            print 'Detections' + str(detectVec) + ' Limit ' + str((self.pulseLevel+self.noiseLevel)/2*self.NOISE_FACTOR)
         return None
