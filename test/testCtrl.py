@@ -49,6 +49,7 @@ class testCtrl:
         loop_cnt =0
         while self.stream.is_active() and loop_cnt < timeout and not self.callBackCompleted:
             time.sleep(1)
+            print 'Tick'
             if callBack is not None:
                 retVal = callBack (loop_cnt,timeout)
             else:
@@ -81,7 +82,9 @@ class testCtrl:
     def playSound (self,maxTime,waveSrc):
         self.wf = wave.open(waveSrc, 'rb')
         self.setCallBackFunction (self.playSoundCallBack)
+        print 'Wait for sound completion..'
         self.waitForCallbackCompleted(maxTime,None)
+        print 'Sound completed...'
         self.setCallBackFunction(None)
         
         
