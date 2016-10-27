@@ -86,6 +86,9 @@ class testCtrl:
         self.waitForCallbackCompleted(maxTime,None)
         print 'Sound completed...'
         self.setCallBackFunction(None)
+        self.wf.close()
+        self.wf = None
+
         
         
     def measureNoiseCallBack (self,in_data, recordedData, frame_count, time_info, status):
@@ -103,9 +106,9 @@ class testCtrl:
         print "Noise level = " + str(self.noiseLevel)
         
     def measureCallDelayCallBack (self, in_data, recordedData, frame_count, time_info, status):
-        dataChunk = np.abs(np.fromstring(in_data, dtype='int{0}'.format(16)))
-        dataChunk.shape = [frame_count,2]
-        recordedData.append (dataChunk)
+        #dataChunk = np.abs(np.fromstring(in_data, dtype='int{0}'.format(16)))
+        #dataChunk.shape = [frame_count,2]
+        #recordedData.append (dataChunk)
 
         data = self.wf.readframes(frame_count)
         
@@ -117,6 +120,8 @@ class testCtrl:
         self.waitForCallbackCompleted(testTime,self.detectPulses)
         time.sleep(0.5)
         self.setCallBackFunction(None)
+        self.wf.close()
+        self.wf = None
         recordedDataVec = np.reshape(self.recordedData,newshape = [-1,2])
         np.save ('outNP.npy',recordedDataVec)
         print "Delay measurement done!!"
