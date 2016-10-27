@@ -102,6 +102,7 @@ class testCtrl:
             while dataSamples < frame_count:
                 self.wf.rewind()
                 data += self.wf.readframes(frame_count-dataSamples)
+                dataSamples = len(data)/self.bytesPerSample
         return (data, pyaudio.paContinue,False)
         
     def measureNSRLevel (self,testTime,waveSrc):
