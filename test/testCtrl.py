@@ -92,17 +92,17 @@ class testCtrl:
         
         
     def measureNoiseCallBack (self,in_data, recordedData, frame_count, time_info, status):
-        dataChunk = np.abs(np.fromstring(in_data, dtype='int{0}'.format(16)))
-        dataChunk.shape = [frame_count,2]
-        recordedData.append (dataChunk)
+        #dataChunk = np.abs(np.fromstring(in_data, dtype='int{0}'.format(16)))
+        #dataChunk.shape = [frame_count,2]
+        #recordedData.append (dataChunk)
         return ('', pyaudio.paContinue,False)
         
     def measureNoiseLevel (self,testTime):
         self.setCallBackFunction (self.measureNoiseCallBack)
         time.sleep(testTime)
         self.setCallBackFunction(None)
-        recordedDataVec = np.reshape(self.recordedData,newshape = [-1,2])
-        self.noiseLevel = recordedDataVec.mean(axis=0)
+        #recordedDataVec = np.reshape(self.recordedData,newshape = [-1,2])
+        #self.noiseLevel = recordedDataVec.mean(axis=0)
         print "Noise level = " + str(self.noiseLevel)
         
     def measureCallDelayCallBack (self, in_data, recordedData, frame_count, time_info, status):
