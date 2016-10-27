@@ -16,7 +16,7 @@ class testCtrl:
         self.NOISE_FACTOR=NOISE_FACTOR
         self.PULSE_DETECT_SAMP=PULSE_DETECT_SAMP
         self.callBackCompleted = False
-        self.noiseLevel = (0.0,0.0)
+        self.noiseLevel = np.array([[0,0]])
         self.p = pyaudio.PyAudio()
         self.defaultSoundFile = defaultSoundFile
         self.callBackFunctionPtr = None
@@ -81,7 +81,7 @@ class testCtrl:
     def playSound (self,maxTime,waveSrc):
         self.wf = wave.open(waveSrc, 'rb')
         self.setCallBackFunction (self.playSoundCallBack)
-        self.waitForCallbackCompleted(maxTime,self.detectPulses)
+        self.waitForCallbackCompleted(maxTime,None)
         self.setCallBackFunction(None)
         
         
@@ -120,7 +120,7 @@ class testCtrl:
         
     def detectPulses (self,currTime,endTime):
         recordedDataVec = np.reshape(self.recordedData,newshape = [-1,2])
-        detectVec = (recordedDataVec>self.noiseLevel*self.NOISE_FACTOR).sum(axis=0)
+        detectVec = (recordedDataVec>(self.noiseLevel*self.NOISE_FACTOR)).sum(axis=0)
         if (detectVec>self.PULSE_DETECT_SAMP).sum() == 2:
             print "Pulse on both channels detected!!!"
             return endTime
