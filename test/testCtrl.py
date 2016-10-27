@@ -164,9 +164,9 @@ class testCtrl:
         #recordedData.append (dataChunk)
         #recordedDataVec = np.reshape(self.recordedData,newshape = [-1,2])
         detectVec = (recordedDataVec>((self.pulseLevel+self.noiseLevel)/2*self.NOISE_FACTOR)).sum(axis=0)
+        print 'Detections' + str(detectVec) + ' Limit ' + str((self.pulseLevel+self.noiseLevel)/2*self.NOISE_FACTOR)
         if (detectVec>self.PULSE_DETECT_SAMP).sum() == 2:
             print "Pulse on both channels detected!!!"
             return endTime
-        else:
-            print 'Detections' + str(detectVec) + ' Limit ' + str((self.pulseLevel+self.noiseLevel)/2*self.NOISE_FACTOR)
+
         return None
