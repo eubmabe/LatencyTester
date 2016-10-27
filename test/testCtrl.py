@@ -121,7 +121,10 @@ class testCtrl:
         self.setCallBackFunction(None)
         self.wf.close()
         self.wf = None
-        recordedDataVec = np.reshape(self.recordedData,newshape = [-1,2])
+        dataChunk = b''.join(self.recordedData)
+        recordedDataVec = np.abs(np.fromstring(dataChunk, dtype='int{0}'.format(16)))
+        recordedDataVec.shape = [len(dataChunk)/self.bytesPerSample,2]
+        #recordedDataVec = np.reshape(self.recordedData,newshape = [-1,2])
         np.save ('outNP.npy',recordedDataVec)
         print "Delay measurement done!!"
         
