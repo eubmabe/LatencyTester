@@ -100,6 +100,8 @@ class testCtrl:
         time.sleep(testTime)
         self.setCallBackFunction(None)
         dataChunk = b''.join(self.recordedData)
+        self.recordedData = []
+
         recordedDataVec = np.abs(np.fromstring(dataChunk, dtype='int{0}'.format(16)))
         recordedDataVec.shape = [len(dataChunk)/self.bytesPerSample,2]
         #recordedDataVec = np.reshape(self.recordedData,newshape = [-1,2])
@@ -113,7 +115,7 @@ class testCtrl:
         
         return (data, pyaudio.paContinue,False)
         
-    def measureCallDelay (self,testTime,waveSrc):
+    def measureCallDelay (self,testTime,waveSrc,outFile):
         self.wf = wave.open(waveSrc, 'rb')
         self.setCallBackFunction (self.measureCallDelayCallBack)
         self.waitForCallbackCompleted(testTime,self.detectPulses)
@@ -122,10 +124,12 @@ class testCtrl:
         self.wf.close()
         self.wf = None
         dataChunk = b''.join(self.recordedData)
+        self.recordedData = []
+        
         recordedDataVec = np.abs(np.fromstring(dataChunk, dtype='int{0}'.format(16)))
         recordedDataVec.shape = [len(dataChunk)/self.bytesPerSample,2]
         #recordedDataVec = np.reshape(self.recordedData,newshape = [-1,2])
-        np.save ('outNP.npy',recordedDataVec)
+        np.save (outFile,recordedDataVec)
         print "Delay measurement done!!"
         
     def detectPulses (self,currTime,endTime):
