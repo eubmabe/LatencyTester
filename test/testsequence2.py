@@ -21,7 +21,7 @@ print("Click delay = " + str (click_delay))
 
 # Init test bed
 # instantiate testObject
-with TC.testCtrl(defaultSoundFile='test.wav',NOISE_FACTOR=20,PULSE_DETECT_SAMP=1000) as testObj:
+with TC.testCtrl(defaultSoundFile='test.wav',NOISE_FACTOR=1,PULSE_DETECT_SAMP=1000) as testObj:
     #testObj = TC.testCtrl(defaultSoundFile='test.wav',NOISE_FACTOR=20,PULSE_DETECT_SAMP=1000)
     
     print 'Init GPIO'

@@ -11,7 +11,7 @@ import numpy as np
 
 class testCtrl:
     
-    def __init__(self,defaultSoundFile='test.wav',NOISE_FACTOR=1,PULSE_DETECT_SAMP=1000):
+    def __init__(self,defaultSoundFile='test.wav',NOISE_FACTOR=1.0,PULSE_DETECT_SAMP=1000):
         self.recordedData = []
         self.NOISE_FACTOR=NOISE_FACTOR
         self.PULSE_DETECT_SAMP=PULSE_DETECT_SAMP
