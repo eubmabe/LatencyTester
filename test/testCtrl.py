@@ -17,8 +17,7 @@ class testCtrl:
         self.PULSE_DETECT_SAMP=PULSE_DETECT_SAMP
         self.callBackCompleted = False
         self.playDuringNSRflag = False
-        self.noiseLevel = np.array([[0,0]])
-        self.pulseLevel = np.array([[1000,1000]])
+        self.detectionLevels = {}
         self.p = pyaudio.PyAudio()
         self.defaultSoundFile = defaultSoundFile
         self.callBackFunctionPtr = None
@@ -47,13 +46,13 @@ class testCtrl:
         self.p.terminate()
         print 'Test ctrl destructed!!!'
         
-    def waitForCallbackCompleted (self, timeout,callBack=None): # Timeout in number of loops
+    def waitForCallbackCompleted (self, timeout,callBack=None,callArg=None): # Timeout in number of loops
         loop_cnt =0
         while self.stream.is_active() and loop_cnt < timeout and not self.callBackCompleted:
             time.sleep(1)
             print 'Tick'
             if callBack is not None:
-                retVal = callBack (loop_cnt,timeout)
+                retVal = callBack (loop_cnt,timeout,callArg)
             else:
                 retVal = None
             if retVal is None:
@@ -125,13 +124,13 @@ class testCtrl:
 
         recordedDataVec = np.abs(np.fromstring(dataChunkSilence, dtype='int{0}'.format(16)))
         recordedDataVec.shape = [len(dataChunkSilence)/self.bytesPerSample,2]
-        self.noiseLevel = np.percentile (recordedDataVec, 95, axis=0)
-        print "Noise level = " + str(self.noiseLevel)
+        self.detectionLevels[waveSrc]={'noiseLevel' : np.percentile (recordedDataVec, 95, axis=0)}
+        print "Noise level = " + str(self.detectionLevels[waveSrc]['noiseLevel'])
 
         recordedDataVec = np.abs(np.fromstring(dataChunkNoise, dtype='int{0}'.format(16)))
         recordedDataVec.shape = [len(dataChunkNoise)/self.bytesPerSample,2]
-        self.pulseLevel = np.percentile (recordedDataVec, 95, axis=0)
-        print "Pulse level = " + str(self.pulseLevel)
+        self.detectionLevels[waveSrc]['pulseLevel'] = np.percentile (recordedDataVec, 95, axis=0)
+        print "Pulse level = " + str(self.detectionLevels[waveSrc]['pulseLevel'])
         
     def measureCallDelayCallBack (self, in_data, recordedData, frame_count, time_info, status):
         recordedData.append (in_data)
@@ -144,7 +143,7 @@ class testCtrl:
         self.recordedData = []
         self.wf = wave.open(waveSrc, 'rb')
         self.setCallBackFunction (self.measureCallDelayCallBack)
-        self.waitForCallbackCompleted(testTime,self.detectPulses)
+        self.waitForCallbackCompleted(testTime,self.detectPulses,waveSrc)
         time.sleep(0.5)
         self.setCallBackFunction(None)
         self.wf.close()
@@ -158,14 +157,14 @@ class testCtrl:
         np.save (outFile,recordedDataVec)
         print "Delay measurement done!!"
         
-    def detectPulses (self,currTime,endTime):
+    def detectPulses (self,currTime,endTime,waveSrc):
         dataChunk = b''.join(self.recordedData)
         recordedDataVec = np.abs(np.fromstring(dataChunk, dtype='int{0}'.format(16)))
         recordedDataVec.shape = [len(dataChunk)/self.bytesPerSample,2]
         #recordedData.append (dataChunk)
         #recordedDataVec = np.reshape(self.recordedData,newshape = [-1,2])
-        detectVec = (recordedDataVec>((self.pulseLevel+self.noiseLevel)/2*self.NOISE_FACTOR)).sum(axis=0)
-        print 'Detections' + str(detectVec) + ' Limit ' + str((self.pulseLevel+self.noiseLevel)/2*self.NOISE_FACTOR)
+        detectVec = (recordedDataVec>((self.detectionLevels[waveSrc]['pulseLevel']+self.detectionLevels[waveSrc]['noiseLevel'])/2*self.NOISE_FACTOR)).sum(axis=0)
+        print 'Detections' + str(detectVec) + ' Limit ' + str((self.detectionLevels[waveSrc]['pulseLevel']+self.detectionLevels[waveSrc]['noiseLevel'])/2*self.NOISE_FACTOR)
         if (detectVec>self.PULSE_DETECT_SAMP).sum() == 2:
             print "Pulse on both channels detected!!!"
             return endTime
