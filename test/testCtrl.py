@@ -127,6 +127,7 @@ class testCtrl:
         print "Delay measurement done!!"
         
     def detectPulses (self,currTime,endTime):
+        print 'Detect pulse...'
         recordedDataVec = np.reshape(self.recordedData,newshape = [-1,2])
         detectVec = (recordedDataVec>(self.noiseLevel*self.NOISE_FACTOR)).sum(axis=0)
         if (detectVec>self.PULSE_DETECT_SAMP).sum() == 2:
