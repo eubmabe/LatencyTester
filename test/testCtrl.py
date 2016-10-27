@@ -58,7 +58,7 @@ class testCtrl:
                 loop_cnt += 1
             else:
                 loop_cnt = retVal
-
+        self.callBackCompleted = False
 
     def setCallBackFunction (self,callBackPtr):
         self.callBackFunctionPtr = callBackPtr
