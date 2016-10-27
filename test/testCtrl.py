@@ -92,23 +92,22 @@ class testCtrl:
         
         
     def measureNoiseCallBack (self,in_data, recordedData, frame_count, time_info, status):
-        #dataChunk = np.abs(np.fromstring(in_data, dtype='int{0}'.format(16)))
-        #dataChunk.shape = [frame_count,2]
-        #recordedData.append (dataChunk)
+        recordedData.append (in_data)
         return ('', pyaudio.paContinue,False)
         
     def measureNoiseLevel (self,testTime):
         self.setCallBackFunction (self.measureNoiseCallBack)
         time.sleep(testTime)
         self.setCallBackFunction(None)
+        dataChunk = b''.join(self.recordedData)
+        recordedDataVec = np.abs(np.fromstring(dataChunk, dtype='int{0}'.format(16)))
+        recordedDataVec.shape = [len(dataChunk)/self.bytesPerSample,2]
         #recordedDataVec = np.reshape(self.recordedData,newshape = [-1,2])
-        #self.noiseLevel = recordedDataVec.mean(axis=0)
+        self.noiseLevel = recordedDataVec.mean(axis=0)
         print "Noise level = " + str(self.noiseLevel)
         
     def measureCallDelayCallBack (self, in_data, recordedData, frame_count, time_info, status):
-        #dataChunk = np.abs(np.fromstring(in_data, dtype='int{0}'.format(16)))
-        #dataChunk.shape = [frame_count,2]
-        #recordedData.append (dataChunk)
+        recordedData.append (in_data)
 
         data = self.wf.readframes(frame_count)
         
@@ -127,8 +126,11 @@ class testCtrl:
         print "Delay measurement done!!"
         
     def detectPulses (self,currTime,endTime):
-        print 'Detect pulse...'
-        recordedDataVec = np.reshape(self.recordedData,newshape = [-1,2])
+        dataChunk = b''.join(self.recordedData)
+        recordedDataVec = np.abs(np.fromstring(dataChunk, dtype='int{0}'.format(16)))
+        recordedDataVec.shape = [len(dataChunk)/self.bytesPerSample,2]
+        #recordedData.append (dataChunk)
+        #recordedDataVec = np.reshape(self.recordedData,newshape = [-1,2])
         detectVec = (recordedDataVec>(self.noiseLevel*self.NOISE_FACTOR)).sum(axis=0)
         if (detectVec>self.PULSE_DETECT_SAMP).sum() == 2:
             print "Pulse on both channels detected!!!"
