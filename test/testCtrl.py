@@ -85,7 +85,7 @@ class testCtrl:
         self.setCallBackFunction(None)
         
         
-    def measureNoiseCallBack (in_data, recordedData, frame_count, time_info, status):
+    def measureNoiseCallBack (self,in_data, recordedData, frame_count, time_info, status):
         dataChunk = np.abs(np.fromstring(in_data, dtype='int{0}'.format(16)))
         dataChunk.shape = [frame_count,2]
         recordedData.append (dataChunk)
