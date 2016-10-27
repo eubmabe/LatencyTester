@@ -57,10 +57,12 @@ with TC.testCtrl(defaultSoundFile='test.wav',NOISE_FACTOR=20,PULSE_DETECT_SAMP=1
     testObj.playSound (10,'test.wav')
     time.sleep(.5)
     print 'Start noise measurement'
-    testObj.measureNoiseLevel(5)
+    testObj.measureNSRLevel(5,'testPulseLeft.wav')
     print 'Start test ..'
     testObj.measureCallDelay(10,'testPulseLeft.wav','out1NP.npy')
     time.sleep(.5)
+    print 'Start noise measurement'
+    testObj.measureNSRLevel(5,'testPulseRight.wav')
     testObj.measureCallDelay(10,'testPulseRight.wav','out2NP.npy')
     
     print 'COMPLETED!!!!'

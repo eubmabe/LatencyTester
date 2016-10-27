@@ -11,12 +11,14 @@ import numpy as np
 
 class testCtrl:
     
-    def __init__(self,defaultSoundFile='test.wav',NOISE_FACTOR=20,PULSE_DETECT_SAMP=1000):
+    def __init__(self,defaultSoundFile='test.wav',NOISE_FACTOR=1,PULSE_DETECT_SAMP=1000):
         self.recordedData = []
         self.NOISE_FACTOR=NOISE_FACTOR
         self.PULSE_DETECT_SAMP=PULSE_DETECT_SAMP
         self.callBackCompleted = False
+        self.playDuringNSRflag = False
         self.noiseLevel = np.array([[0,0]])
+        self.pulseLevel = np.array([[1000,1000]])
         self.p = pyaudio.PyAudio()
         self.defaultSoundFile = defaultSoundFile
         self.callBackFunctionPtr = None
@@ -91,22 +93,43 @@ class testCtrl:
 
         
         
-    def measureNoiseCallBack (self,in_data, recordedData, frame_count, time_info, status):
+    def measureNSRcallBack (self,in_data, recordedData, frame_count, time_info, status):
         recordedData.append (in_data)
-        return ('', pyaudio.paContinue,False)
+        data=''
+        if self.playDuringNSRflag:
+            data = self.wf.readframes(frame_count)
+            dataSamples = len(data)/self.bytesPerSample
+            while dataSamples < frame_count:
+                self.wf.rewind()
+                data += self.wf.readframes(frame_count-dataSamples)
+        return (data, pyaudio.paContinue,False)
         
-    def measureNoiseLevel (self,testTime):
-        self.setCallBackFunction (self.measureNoiseCallBack)
-        time.sleep(testTime)
-        self.setCallBackFunction(None)
-        dataChunk = b''.join(self.recordedData)
+    def measureNSRLevel (self,testTime,waveSrc):
         self.recordedData = []
+        self.setCallBackFunction (self.measureNSRcallBack)
+        time.sleep(testTime*0.5)
+        dataChunkSilence = b''.join(self.recordedData)
+        self.wf = wave.open(waveSrc, 'rb')
+        time.sleep (0.2) #Allow pulse to play out
+        self.recordedData = []
+        self.playDuringNSRflag = True
+        time.sleep(testTime*0.5)
+        dataChunkNoise = b''.join(self.recordedData)
+        self.recordedData = []
+        self.playDuringNSRflag = False
+        self.setCallBackFunction(None)
+        self.wf.close()
+        self.wf = None
 
-        recordedDataVec = np.abs(np.fromstring(dataChunk, dtype='int{0}'.format(16)))
-        recordedDataVec.shape = [len(dataChunk)/self.bytesPerSample,2]
-        #recordedDataVec = np.reshape(self.recordedData,newshape = [-1,2])
+        recordedDataVec = np.abs(np.fromstring(dataChunkSilence, dtype='int{0}'.format(16)))
+        recordedDataVec.shape = [len(dataChunkSilence)/self.bytesPerSample,2]
         self.noiseLevel = recordedDataVec.mean(axis=0)
         print "Noise level = " + str(self.noiseLevel)
+
+        recordedDataVec = np.abs(np.fromstring(dataChunkNoise, dtype='int{0}'.format(16)))
+        recordedDataVec.shape = [len(dataChunkNoise)/self.bytesPerSample,2]
+        self.pulseLevel = recordedDataVec.mean(axis=0)
+        print "Pulse level = " + str(self.pulseLevel)
         
     def measureCallDelayCallBack (self, in_data, recordedData, frame_count, time_info, status):
         recordedData.append (in_data)
@@ -116,6 +139,7 @@ class testCtrl:
         return (data, pyaudio.paContinue,False)
         
     def measureCallDelay (self,testTime,waveSrc,outFile):
+        self.recordedData = []
         self.wf = wave.open(waveSrc, 'rb')
         self.setCallBackFunction (self.measureCallDelayCallBack)
         self.waitForCallbackCompleted(testTime,self.detectPulses)
@@ -138,7 +162,7 @@ class testCtrl:
         recordedDataVec.shape = [len(dataChunk)/self.bytesPerSample,2]
         #recordedData.append (dataChunk)
         #recordedDataVec = np.reshape(self.recordedData,newshape = [-1,2])
-        detectVec = (recordedDataVec>(self.noiseLevel*self.NOISE_FACTOR)).sum(axis=0)
+        detectVec = (recordedDataVec>((self.pulseLevel+self.noiseLevel)/2*self.NOISE_FACTOR)).sum(axis=0)
         if (detectVec>self.PULSE_DETECT_SAMP).sum() == 2:
             print "Pulse on both channels detected!!!"
             return endTime
