@@ -111,10 +111,11 @@ class testCtrl:
         time.sleep(testTime*0.5)
         dataChunkSilence = b''.join(self.recordedData)
         self.wf = wave.open(waveSrc, 'rb')
-        time.sleep (0.2) #Allow pulse to play out
         self.recordedData = []
         self.playDuringNSRflag = True
-        time.sleep(testTime*0.5)
+        time.sleep(testTime*0.1) # Pulse 20% of measure time
+        self.playDuringNSRflag = False
+        time.sleep(testTime*0.4)
         dataChunkNoise = b''.join(self.recordedData)
         self.recordedData = []
         self.playDuringNSRflag = False
@@ -124,12 +125,12 @@ class testCtrl:
 
         recordedDataVec = np.abs(np.fromstring(dataChunkSilence, dtype='int{0}'.format(16)))
         recordedDataVec.shape = [len(dataChunkSilence)/self.bytesPerSample,2]
-        self.noiseLevel = recordedDataVec.mean(axis=0)
+        self.noiseLevel = np.percentile (recordedDataVec, 95, axis=0)
         print "Noise level = " + str(self.noiseLevel)
 
         recordedDataVec = np.abs(np.fromstring(dataChunkNoise, dtype='int{0}'.format(16)))
         recordedDataVec.shape = [len(dataChunkNoise)/self.bytesPerSample,2]
-        self.pulseLevel = recordedDataVec.mean(axis=0)
+        self.pulseLevel = np.percentile (recordedDataVec, 95, axis=0)
         print "Pulse level = " + str(self.pulseLevel)
         
     def measureCallDelayCallBack (self, in_data, recordedData, frame_count, time_info, status):
