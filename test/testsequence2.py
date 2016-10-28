@@ -14,14 +14,19 @@ import sys
     
 
 click_delay = 0.5
+filterLengthPrePeak = 500
+filterLengthPostPeak = 200
 if len(sys.argv) >=2:
     click_delay = float(sys.argv[1])
+if len(sys.argv) >=4:
+    filterLengthPrePeak = float(sys.argv[2])
+    filterLengthPostPeak = float(sys.argv[3])
 print("Click delay = " + str (click_delay))
 
 
 # Init test bed
 # instantiate testObject
-with TC.testCtrl(defaultSoundFile='test.wav',NOISE_FACTOR=1,PULSE_DETECT_SAMP=1000) as testObj:
+with TC.testCtrl(defaultSoundFile='test.wav',NOISE_FACTOR=1,PULSE_DETECT_SAMP=1000,filterLengthPrePeak=filterLengthPrePeak,filterLengthPostPeak=filterLengthPostPeak) as testObj:
     #testObj = TC.testCtrl(defaultSoundFile='test.wav',NOISE_FACTOR=20,PULSE_DETECT_SAMP=1000)
     
     print 'Init GPIO'

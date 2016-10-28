@@ -11,10 +11,11 @@ import numpy as np
 
 class testCtrl:
     
-    def __init__(self,defaultSoundFile='test.wav',NOISE_FACTOR=1.0,PULSE_DETECT_SAMP=1000):
+    def __init__(self,defaultSoundFile='test.wav',NOISE_FACTOR=1.0,PULSE_DETECT_SAMP=1000,filterLengthPrePeak=500,filterLengthPostPeak=200):
         self.recordedData = []
         self.NOISE_FACTOR=NOISE_FACTOR
         self.PULSE_DETECT_SAMP=PULSE_DETECT_SAMP
+        self.edgeFilter = np.append(np.ones(filterLengthPrePeak)*-1,np.ones(filterLengthPostPeak))
         self.callBackCompleted = False
         self.playDuringNSRflag = False
         self.detectionLevels = {}
@@ -22,11 +23,12 @@ class testCtrl:
         self.defaultSoundFile = defaultSoundFile
         self.callBackFunctionPtr = None
         self.wf = wave.open(defaultSoundFile, 'rb') # wf part of class to simplify clean up
+        self.PULSE_RATE = self.wf.getframerate()
         self.bytesPerSample = self.wf.getsampwidth()*self.wf.getnchannels()
         
         self.stream = self.p.open(format=self.p.get_format_from_width(self.wf.getsampwidth()),
                     channels=self.wf.getnchannels(),
-                    rate=self.wf.getframerate(),
+                    rate=self.PULSE_RATE,
                     output=True,
                     input = True,
                     stream_callback=self.callBackFunction)
@@ -155,7 +157,15 @@ class testCtrl:
         recordedDataVec.shape = [len(dataChunk)/self.bytesPerSample,2]
         #recordedDataVec = np.reshape(self.recordedData,newshape = [-1,2])
         np.save (outFile,recordedDataVec)
-        print "Delay measurement done!!"
+        ch0_SignalEdgeMask = np.correlate(recordedDataVec[:,0],self.edgeFilter)
+        ch1_SignalEdgeMask = np.correlate(recordedDataVec[:,1],self.edgeFilter)
+        np.save ('_0_'+outFile,ch0_SignalEdgeMask)
+        np.save ('_1_'+outFile,ch1_SignalEdgeMask)
+        ch0_SignalEdgeIndex = ch0_SignalEdgeMask.argmax()
+        ch1_SignalEdgeIndex = ch1_SignalEdgeMask.argmax()
+        pulseDelay = np.abs(ch0_SignalEdgeIndex-ch1_SignalEdgeIndex)*1.0/self.PULSE_RATE
+        print "Delay measurement done!! ",str(pulseDelay),str(ch0_SignalEdgeIndex),str(ch1_SignalEdgeIndex)
+        return (pulseDelay,ch0_SignalEdgeIndex,ch1_SignalEdgeIndex)
         
     def detectPulses (self,currTime,endTime,waveSrc):
         dataChunk = b''.join(self.recordedData)
