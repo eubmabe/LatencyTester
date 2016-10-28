@@ -75,13 +75,15 @@ with TC.testCtrl(defaultSoundFile='test.wav',NOISE_FACTOR=NOISE_FACTOR,PULSE_DET
     testObj.measureNSRLevel(5,'testPulseRight.wav')
     time.sleep(3)
     print 'Start test ..'
-    testObj.measureCallDelay(10,'testPulseLeft.wav','out1NP.npy')
-    time.sleep(1)
-    testObj.measureCallDelay(10,'testPulseRight.wav','out2NP.npy')
-    time.sleep(1)
-    testObj.measureCallDelay(10,'testPulseLeft.wav','out1bNP.npy')
-    time.sleep(1)
-    testObj.measureCallDelay(10,'testPulseRight.wav','out2bNP.npy')
+    noTestSeq = 5
+    noTestPerSeq = 5
+    for i in range(noTestSeq):
+        for j in range(noTestPerSeq):
+            testObj.measureCallDelay(10,'testPulseLeft.wav','out1NP.npy')
+            time.sleep(0.2)
+        for j in range(noTestPerSeq):
+            testObj.measureCallDelay(10,'testPulseRight.wav','out2NP.npy')
+            time.sleep(0.2)
     
     print 'COMPLETED!!!!'
     
