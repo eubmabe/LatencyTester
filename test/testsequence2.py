@@ -16,17 +16,24 @@ import sys
 click_delay = 0.5
 filterLengthPrePeak = 500
 filterLengthPostPeak = 200
+NOISE_FACTOR=0.8
+PULSE_DETECT_SAMP=500
 if len(sys.argv) >=2:
     click_delay = float(sys.argv[1])
 if len(sys.argv) >=4:
     filterLengthPrePeak = float(sys.argv[2])
     filterLengthPostPeak = float(sys.argv[3])
+if len(sys.argv) >=6:
+    NOISE_FACTOR = float(sys.argv[4])
+    PULSE_DETECT_SAMP = float(sys.argv[5])
 print("Click delay = " + str (click_delay))
+print("Filter param = " + str (filterLengthPrePeak),str (filterLengthPostPeak))
+print("Edge param = " + str (NOISE_FACTOR),str (PULSE_DETECT_SAMP))
 
 
 # Init test bed
 # instantiate testObject
-with TC.testCtrl(defaultSoundFile='test.wav',NOISE_FACTOR=1,PULSE_DETECT_SAMP=1000,filterLengthPrePeak=filterLengthPrePeak,filterLengthPostPeak=filterLengthPostPeak) as testObj:
+with TC.testCtrl(defaultSoundFile='test.wav',NOISE_FACTOR=NOISE_FACTOR,PULSE_DETECT_SAMP=PULSE_DETECT_SAMP,filterLengthPrePeak=filterLengthPrePeak,filterLengthPostPeak=filterLengthPostPeak) as testObj:
     #testObj = TC.testCtrl(defaultSoundFile='test.wav',NOISE_FACTOR=20,PULSE_DETECT_SAMP=1000)
     
     print 'Init GPIO'
