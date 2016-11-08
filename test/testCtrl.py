@@ -108,15 +108,16 @@ class testCtrl:
         
     def measureNSRLevel (self,testTime,waveSrc):
         self.recordedData = []
+        self.playDuringNSRflag = False
         self.setCallBackFunction (self.measureNSRcallBack)
         time.sleep(testTime*0.5)
         dataChunkSilence = b''.join(self.recordedData)
         self.wf = wave.open(waveSrc, 'rb')
         self.recordedData = []
-        self.playDuringNSRflag = True
-        time.sleep(testTime*0.1) # Pulse 20% of measure time
         self.playDuringNSRflag = False
         time.sleep(testTime*0.4)
+        self.playDuringNSRflag = True
+        time.sleep(testTime*0.1) # Pulse 20% of measure time
         dataChunkNoise = b''.join(self.recordedData)
         self.recordedData = []
         self.playDuringNSRflag = False
