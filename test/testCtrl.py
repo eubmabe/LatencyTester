@@ -147,7 +147,7 @@ class testCtrl:
         self.wf = wave.open(waveSrc, 'rb')
         self.setCallBackFunction (self.measureCallDelayCallBack)
         self.waitForCallbackCompleted(testTime,self.detectPulses,waveSrc)
-        time.sleep(0.5)
+        time.sleep(0.1)
         self.setCallBackFunction(None)
         self.wf.close()
         self.wf = None
