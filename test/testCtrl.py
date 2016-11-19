@@ -165,7 +165,7 @@ class testCtrl:
         ch0_SignalEdgeIndex = ch0_SignalEdgeMask.argmax()
         ch1_SignalEdgeIndex = ch1_SignalEdgeMask.argmax()
         pulseDelay = np.abs(ch0_SignalEdgeIndex-ch1_SignalEdgeIndex)*1.0/self.PULSE_RATE
-        print devA,'<-->',devB,str(pulseDelay),str(ch0_SignalEdgeIndex),str(ch1_SignalEdgeIndex)
+        print devA,'-->',devB,str(pulseDelay),str(ch0_SignalEdgeIndex),str(ch1_SignalEdgeIndex)
         return (devA,devB,pulseDelay,ch0_SignalEdgeIndex,ch1_SignalEdgeIndex)
         
     def detectPulses (self,currTime,endTime,waveSrc):

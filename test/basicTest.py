@@ -8,6 +8,7 @@ Created on Sat Oct 22 03:44:25 2016
 import testCtrl as TC
 import time
 import sys
+import numpy as np
 
 
     
@@ -63,4 +64,4 @@ with TC.testCtrl(defaultSoundFile='test.wav',NOISE_FACTOR=NOISE_FACTOR,PULSE_DET
     
     print 'COMPLETED!!!!'
     
-    numpy.savetxt(testName+'.csv',numpy.asarray(testResultList),header='deviceA,deviceB,delay,indexIn,indexOut',comments='',fmt="%s") 
+    np.savetxt(testName+'.csv',numpy.asarray(testResultList),header='deviceA,deviceB,delay,indexIn,indexOut',comments='',fmt="%s") 
