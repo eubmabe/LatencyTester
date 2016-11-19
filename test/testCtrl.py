@@ -142,7 +142,7 @@ class testCtrl:
         
         return (data, pyaudio.paContinue,False)
         
-    def measureCallDelay (self,testTime,waveSrc,outFile):
+    def measureCallDelay (self,testTime,waveSrc,outFile,devA,devB):
         self.recordedData = []
         self.wf = wave.open(waveSrc, 'rb')
         self.setCallBackFunction (self.measureCallDelayCallBack)
@@ -165,8 +165,8 @@ class testCtrl:
         ch0_SignalEdgeIndex = ch0_SignalEdgeMask.argmax()
         ch1_SignalEdgeIndex = ch1_SignalEdgeMask.argmax()
         pulseDelay = np.abs(ch0_SignalEdgeIndex-ch1_SignalEdgeIndex)*1.0/self.PULSE_RATE
-        print "Delay measurement done!! ",str(pulseDelay),str(ch0_SignalEdgeIndex),str(ch1_SignalEdgeIndex)
-        return (pulseDelay,ch0_SignalEdgeIndex,ch1_SignalEdgeIndex)
+        print devA,'<-->',devB,str(pulseDelay),str(ch0_SignalEdgeIndex),str(ch1_SignalEdgeIndex)
+        return (devA,devB,pulseDelay,ch0_SignalEdgeIndex,ch1_SignalEdgeIndex)
         
     def detectPulses (self,currTime,endTime,waveSrc):
         dataChunk = b''.join(self.recordedData)
