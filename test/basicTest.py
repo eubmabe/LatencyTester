@@ -64,4 +64,4 @@ with TC.testCtrl(defaultSoundFile='test.wav',NOISE_FACTOR=NOISE_FACTOR,PULSE_DET
     
     print 'COMPLETED!!!!'
     
-    np.savetxt(testName+'.csv',numpy.asarray(testResultList),header='deviceA,deviceB,delay,indexIn,indexOut',comments='',fmt="%s") 
+    np.savetxt(testName+'.csv',np.asarray(testResultList),header='deviceA,deviceB,delay,indexIn,indexOut',comments='',fmt="%s") 
