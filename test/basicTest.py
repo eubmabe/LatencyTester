@@ -49,6 +49,7 @@ with TC.testCtrl(defaultSoundFile='test.wav',NOISE_FACTOR=NOISE_FACTOR,PULSE_DET
     print 'Start noise measurement'
     testObj.measureNSRLevel(5,'testPulseRight.wav')
     time.sleep(3)
+    dummy=raw_input('Prepare test press enter: ')
     print 'Start test ..'
     noTestSeq = 5
     noTestPerSeq = 5
